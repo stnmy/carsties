@@ -1,22 +1,43 @@
+using MongoDB.Driver;
+using MongoDB.Entities;
+using SearchService.Data;
+using SearchService.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 
+// // Initialize the DB
+// await DB.InitAsync(
+//     "SearchDb",
+//     MongoClientSettings.FromConnectionString(
+//         builder.Configuration.GetConnectionString("MongoDbConnection")
+//     )
+// );
+
+// // Get the database instance
+// var db = DB.Instance("SearchDb");
+
+// // Create text index
+// await db.Index<Item>()
+//     .Key(x => x.Make, KeyType.Text)
+//     .Key(x => x.Model, KeyType.Text)
+//     .Key(x => x.Color, KeyType.Text)
+//     .CreateAsync();
+
+try
+{
+    await DbInitializer.InitDb(app);
+}catch(Exception e)
+{
+    Console.WriteLine(e);
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
 
 app.Run();
