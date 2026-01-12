@@ -19,6 +19,10 @@ services:
       - 27017:27017
     volumes:
       - mongodata:/data/db
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 25672:15672
 volumes:
   pgdata:
   mongodata:
